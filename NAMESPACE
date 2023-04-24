@@ -1,0 +1,2 @@
+S3method(print,mpm)
+export(mpm)

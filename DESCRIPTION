@@ -1,0 +1,10 @@
+Package: mpm
+Type: Package
+Title: Markovian Poisson Mondel
+Version: 1.0
+Date: 2023-04-21
+Author: Hervé Perdry
+Encoding: UTF-8
+Maintainer: Hervé Perdry <herve.perdry@universite-paris-saclay.fr>
+Description: Fit auto regressive poisson model
+License: MIT
