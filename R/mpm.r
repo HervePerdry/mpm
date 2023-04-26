@@ -1,8 +1,11 @@
-mpm <- function(formula, data, max.iter = 500, epsilon =  1e-12, rescale.var = TRUE, algorithm = c("scoring", "Nelder-Mead")) {
+mpm <- function(formula, data, rescale.var = TRUE, algorithm = c("scoring", "Nelder-Mead"), control = list()) {
   call <- match.call()
   mf <- model.frame(formula, data)
   Y <- model.response(mf)
   X <- model.matrix(formula, data)
+  
+  ctr <- list(scoring.maxit = 100, scoring.eps = 1e-12, nm.maxit = 5e4, nm.reltol = 1e-10)
+  ctr[ names(control) ] <- control
 
   X1 <- X[-1,,drop = FALSE]
   if(rescale.var) {
@@ -28,7 +31,7 @@ mpm <- function(formula, data, max.iter = 500, epsilon =  1e-12, rescale.var = T
   algorithm <- match.arg(algorithm)
   
   if(algorithm == "scoring") {
-    R <- scoring(Y, X1, max.iter = max.iter, epsilon = epsilon)
+    R <- scoring(Y, X1, max.iter = ctr$scoring.maxit, epsilon = ctr$scoring.eps)
     if(!R$converged) {
       warning("Fisher scoring did not converge, falling back to Nelder-Mead")
       algorithm <- "Nelder-Mead"
@@ -36,9 +39,9 @@ mpm <- function(formula, data, max.iter = 500, epsilon =  1e-12, rescale.var = T
   }
   
   if(algorithm == "Nelder-Mead") {
-    R <- NM(Y, X1)
+    R <- NM(Y, X1, maxit = ctr$nm.maxit, reltol = ctr$nm.reltol)
     if(!R$converged) 
-      warning("Neld-Mead did not converge")
+      warning("Nelder-Mead did not converge")
   }
 
   # go back to original scale !

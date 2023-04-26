@@ -1,4 +1,4 @@
-NM <- function(Y, X, beta0) {
+NM <- function(Y, X, beta0, maxit, reltol) {
   n <- nrow(X)
   p <- ncol(X)
   Y1 <- Y[-(n+1)]
@@ -10,7 +10,7 @@ NM <- function(Y, X, beta0) {
   }
   beta <- beta0
 
-  o <- optim( beta0, \(b) mpm.deviance(Y, X, b), control = list(reltol = 1e-10))
+  o <- optim( beta0, \(b) mpm.deviance(Y, X, b), control = list(reltol = reltol, maxit = maxit))
   beta <- o$par
   I <- fisher.information(beta, Y, X)
 
@@ -21,5 +21,5 @@ NM <- function(Y, X, beta0) {
   phi <- sum(residuals**2) / (n-p)
 
   list( beta = beta, inverse.fisher = solve(I), phi = phi, pearson.residuals = as.vector(residuals), 
-        iterations = as.integer(o$counts[1]), converged = (o$convergence == 0), deviance = o$value)
+        iterations = as.integer(o$counts[1]), converged = (o$convergence == 0), deviance = o$value )
 }
