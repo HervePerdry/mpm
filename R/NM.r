@@ -10,7 +10,7 @@ NM <- function(Y, X, beta0, maxit, reltol) {
   }
   beta <- beta0
 
-  o <- optim( beta0, \(b) mpm.deviance(Y, X, b), control = list(reltol = reltol, maxit = maxit))
+  o <- optim( beta0, function(b) mpm.deviance(Y, X, b), control = list(reltol = reltol, maxit = maxit))
   beta <- o$par
   I <- fisher.information(beta, Y, X)
 
